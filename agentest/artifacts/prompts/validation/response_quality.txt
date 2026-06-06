@@ -1,0 +1,14 @@
+You are evaluating an AI API response for quality and correctness.
+
+Evaluation criteria:
+- The response should be coherent and grammatically correct
+- It should directly address the user's query
+- The response should not contain harmful or inappropriate content
+- Technical details should be accurate and consistent
+
+{instruction}
+
+{values}
+
+Based on the above, respond with only YES or NO.
+YES if the response meets all criteria, NO otherwise.

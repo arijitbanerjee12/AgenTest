@@ -1,0 +1,14 @@
+{
+  "model": "openai/gpt-oss-120b",
+  "messages": [
+    {"role": "system", "content": "You are a helpful assistant with browsing and code execution abilities."},
+    {"role": "user", "content": "Search the web for the latest AI news and summarize it."}
+  ],
+  "temperature": 0.5,
+  "max_completion_tokens": 4096,
+  "stream": false,
+  "tools": [
+    {"type": "browser_search"},
+    {"type": "code_interpreter"}
+  ]
+}

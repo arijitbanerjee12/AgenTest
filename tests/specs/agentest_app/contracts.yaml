@@ -1,0 +1,17 @@
+chat_completion_contract:
+  response:
+    required_fields:
+      - id
+      - object
+      - created
+      - model
+      - choices
+    choice:
+      required_fields:
+        - index
+        - message
+        - finish_reason
+    message:
+      required_fields:
+        - role
+        - content

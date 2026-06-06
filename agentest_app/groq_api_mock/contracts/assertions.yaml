@@ -1,0 +1,46 @@
+# Contract assertions for Chat Completion API
+# These define validation rules that the test framework enforces.
+
+chat_completion:
+  response:
+    required_fields:
+      - id
+      - object
+      - created
+      - model
+      - choices
+      - usage
+    choice_required_fields:
+      - index
+      - message
+      - finish_reason
+    message_required_fields:
+      - role
+      - content
+    type_assertions:
+      id: string
+      object: string
+      created: integer
+      model: string
+      choices: array
+      usage:
+        prompt_tokens: integer
+        completion_tokens: integer
+        total_tokens: integer
+
+  error_response:
+    required_fields:
+      - detail
+    type_assertions:
+      detail: string
+
+streaming:
+  response:
+    format: ndjson
+    chunk_required_fields:
+      - id
+      - object
+      - choices
+    choices_required_fields:
+      - index
+      - delta

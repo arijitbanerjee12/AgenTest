@@ -1,0 +1,11 @@
+{
+  "model": "openai/gpt-oss-120b",
+  "messages": [
+    {"role": "user", "content": "My name is Alice."},
+    {"role": "assistant", "content": "Hello Alice! How can I help you today?"},
+    {"role": "user", "content": "What is my name?"}
+  ],
+  "temperature": 0.5,
+  "max_completion_tokens": 512,
+  "stream": false
+}

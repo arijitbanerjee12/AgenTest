@@ -1,0 +1,45 @@
+project_name: AgenTest
+debug: false
+log_level: INFO
+
+llm:
+  default_provider: groq
+  openai:
+    api_key: ${OPENAI_API_KEY}
+    model: gpt-4o
+  anthropic:
+    api_key: ${ANTHROPIC_API_KEY}
+    model: claude-sonnet-4-20250514
+  groq:
+    api_key: ${GROQ_API_KEY}
+    model: openai/gpt-oss-120b
+  azure:
+    api_key: ${AZURE_OPENAI_API_KEY}
+    model: gpt-4o
+    base_url: ${AZURE_OPENAI_ENDPOINT}
+  bedrock:
+    api_key: ${AWS_ACCESS_KEY_ID}
+    model: anthropic.claude-sonnet-4
+  ollama:
+    base_url: http://localhost:11434
+    model: llama3
+  vllm:
+    base_url: http://localhost:8000
+    model: meta-llama/Llama-3.1-8B
+
+agents:
+  coordinator_model: gpt-4o
+  writer_model: gpt-4o-mini
+  executor_model: gpt-4o-mini
+  judge_model: gpt-4o
+
+prompts:
+  validation_dir:
+    - tests/prompts/validation
+    - agentest/artifacts/prompts/validation
+
+storage:
+  results_backend: sqlite
+  sqlite_path: ~/.agentest/results.db
+  artifact_store: local
+  artifact_path: ~/.agentest/artifacts

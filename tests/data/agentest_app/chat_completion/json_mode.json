@@ -1,0 +1,10 @@
+{
+  "model": "openai/gpt-oss-120b",
+  "messages": [
+    {"role": "system", "content": "You must respond in JSON format."},
+    {"role": "user", "content": "List 3 programming languages with their creator and year."}
+  ],
+  "temperature": 0.3,
+  "max_completion_tokens": 1024,
+  "response_format": {"type": "json_object"}
+}

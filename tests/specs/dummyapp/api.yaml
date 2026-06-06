@@ -1,0 +1,5 @@
+endpoints:
+  create_post:
+    method: POST
+    path: /posts
+    body_dir: tests/data/create_user

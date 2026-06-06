@@ -1,0 +1,10 @@
+{
+  "model": "openai/gpt-oss-120b",
+  "messages": [
+    {"role": "user", "content": "Solve this step by step: 27 * 45 + 13 * 8"}
+  ],
+  "temperature": 0,
+  "max_completion_tokens": 8192,
+  "reasoning_effort": "high",
+  "stream": false
+}
