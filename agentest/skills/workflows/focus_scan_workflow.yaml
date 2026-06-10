@@ -1,0 +1,78 @@
+# Focus Scan — Agentic AI Workflow
+#
+# 1. The agent runs the focus_scan BDD test suite via pytest
+# 2. After the scan completes, BUY/SELL signals are persisted as JSON in tests/temp/scan_results/
+# 3. The agent then loads those signals and runs AI fundamental analysis on each
+# 4. An enriched Excel report is generated with both technical + fundamental signals
+#
+# Usage:
+#   uv run pytest tests/test_runner.py -m "focus_scan" -n 6 --alluredir=tests/temp/reports/allure_focus -v
+#   uv run python -c "from agentest.utils.indicators.enriched_report import generate_enriched_report; p = generate_enriched_report(); print(p)"
+
+steps:
+  # ─── Step 1: Technical Scan ───
+  - name: "Run Focus Technical Scan"
+    command: |
+      uv run pytest tests/test_runner.py -m "focus_scan" -n 6 --alluredir=tests/temp/reports/allure_focus -v
+    description: >
+      Runs the BDD daily scan on ETFs + top 30 large caps (focus universe).
+      Each stock generates a BUY/SELL/HOLD/WATCH/SKIP signal.
+      Results are saved as individual JSON files in tests/temp/scan_results/.
+    expected_output: >
+      pytest output with pass/fail per symbol.
+      JSON files in tests/temp/scan_results/ for BUY/SELL signals.
+
+  # ─── Step 2: Load BUY/SELL Signals ───
+  - name: "Load Actionable Signals"
+    command: |
+      python -c "
+      import json
+      from pathlib import Path
+      d = Path('tests/temp/scan_results')
+      signals = []
+      for f in sorted(d.iterdir()):
+          if f.suffix == '.json':
+              s = json.loads(f.read_text())
+              if s.get('action') in ('BUY', 'SELL'):
+                  signals.append(s)
+      print(json.dumps([{'symbol': s['symbol'], 'action': s['action'], 'reason': s['reason']} for s in signals], indent=2))
+      "
+    description: >
+      Reads all scan result JSONs and extracts only BUY/SELL signals
+      that need fundamental verification.
+    expected_output: >
+      JSON list of actionable signals with symbol, action, reason.
+
+  # ─── Step 3: AI Fundamental Analysis ───
+  - name: "AI Fundamental & Sentiment Analysis"
+    command: |
+      uv run python -c "
+      from agentest.utils.indicators.enriched_report import generate_enriched_report
+      p = generate_enriched_report(analyze_fundamentals=True)
+      print(f'Report: {p}')
+      "
+    description: >
+      For each BUY/SELL signal, the configured LLM (Groq/OpenAI/Anthropic)
+      analyzes recent news, earnings sentiment, and fundamental data.
+      Produces a sentiment score, fundamental support level, and AI verdict.
+      All data is compiled into an enriched Excel report.
+    expected_output: >
+      Enriched Excel report saved to Documents/Agentest_Reports/YYYYMMDD_HHMMSS/FocusScan_*.xlsx
+      Contains: All Signals sheet (technical + fundamental columns),
+      AI Analysis sheet (only BUY/SELL with AI verdicts),
+      Summary sheet (signal counts + AI verdict breakdown).
+
+  # ─── Step 4: Generate Allure Report (optional) ───
+  - name: "Generate Allure Dashboard"
+    command: |
+      allure generate --single-file tests/temp/reports/allure_focus -o tests/temp/reports/allure_focus_report
+    description: >
+      Optional: generates an Allure HTML report with the test results,
+      charts, and per-stock analysis.
+    expected_output: >
+      tests/temp/reports/allure_focus_report/index.html
+
+outputs:
+  - enriched_excel: "Documents/Agentest_Reports/YYYYMMDD_HHMMSS/FocusScan_*.xlsx"
+  - allure_report: "tests/temp/reports/allure_focus_report/index.html"
+  - scan_results: "tests/temp/scan_results/*.json"

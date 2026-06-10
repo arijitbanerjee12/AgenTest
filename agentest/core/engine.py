@@ -1,5 +1,5 @@
-from agentest.config import Settings
-from agentest.llm import LLMRegistry
+from agentest.utils.config import Settings
+from agentest.utils.llm import LLMRegistry
 
 
 class AgenTestEngine:

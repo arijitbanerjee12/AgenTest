@@ -1,3 +1,3 @@
-from agentest.utils.api_client import ApiClient, SpecLoader
+from agentest.utils.api.api_client import ApiClient, SpecLoader
 
 __all__ = ["ApiClient", "SpecLoader"]

@@ -1,9 +1,0 @@
-{
-  "model": "openai/gpt-oss-120b",
-  "messages": [
-    {"role": "user", "content": "Write a short poem about AI."}
-  ],
-  "temperature": 1.0,
-  "max_completion_tokens": 2048,
-  "stream": true
-}

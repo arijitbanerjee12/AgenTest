@@ -1,6 +1,6 @@
 import click
 from agentest import __version__
-from agentest.config import load_config
+from agentest.utils.config import load_config
 from agentest.core import AgenTestEngine
 
 
@@ -22,7 +22,7 @@ def run():
 def init():
     """Initialize AgenTest configuration in the current directory."""
     import yaml
-    from agentest.config import Settings
+    from agentest.utils.config import Settings
 
     config = Settings()
     path = "agentest.config.yaml"

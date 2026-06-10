@@ -28,6 +28,11 @@ Thumbs.db
 
 # Runtime
 tests/temp/
+allure-results/
+*.ps1
+
+# Temp scripts
+analyze_excel.py
 
 # Environment
 .env
