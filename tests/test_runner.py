@@ -25,6 +25,22 @@ def test_focus_large_cap_scan(symbol):
 
 
 @pytest.mark.focus_scan
+@pytest.mark.mid_small_cap
+@pytest.mark.parametrize("symbol", load_symbols_from_csv(str(CSV_DIR / "focus_mid_small_cap.csv")))
+@scenario("features/indicators/focus_scan.feature", "Focus Mid/Small Cap scan")
+def test_focus_mid_small_cap_scan(symbol):
+    pass
+
+
+@pytest.mark.focus_scan
+@pytest.mark.sectorial
+@pytest.mark.parametrize("symbol", load_symbols_from_csv(str(CSV_DIR / "focus_sectorial.csv")))
+@scenario("features/indicators/focus_scan.feature", "Focus Sectorial scan")
+def test_focus_sectorial_scan(symbol):
+    pass
+
+
+@pytest.mark.focus_scan
 @pytest.mark.summary
 @scenario("features/indicators/focus_scan.feature", "Focus Scan Summary Dashboard")
 def test_focus_scan_summary():

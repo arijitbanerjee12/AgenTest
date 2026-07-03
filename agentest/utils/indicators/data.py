@@ -1,41 +1,38 @@
 from __future__ import annotations
-from typing import Any
+
 import yfinance as yf
 import pandas as pd
 
 
 GRANULARITY_MAP = {
-    "daily": "1d",
-    "weekly": "1wk",
-    "monthly": "1mo",
-    "hourly": "1h",
-    "minute": "1m",
+    "daily": "1d", "weekly": "1wk", "monthly": "1mo",
+    "hourly": "1h", "minute": "1m", "15m": "15m", "5m": "5m",
 }
 
 
-def fetch_data(symbol: str, granularity: str, period: str = "6mo") -> pd.DataFrame | None:
-    interval = GRANULARITY_MAP.get(granularity, "1d")
-    try:
-        ticker = yf.Ticker(symbol)
-        df = ticker.history(period=period, interval=interval)
-        if df.empty:
-            return None
-        return df
-    except Exception:
-        return None
+def _flatten_multiindex(df: pd.DataFrame) -> pd.DataFrame:
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = [c[0] for c in df.columns]
+    df.columns = [c.capitalize() for c in df.columns]
+    return df
 
 
-def fetch_multiple(symbols: list[str], granularity: str, period: str = "6mo") -> dict[str, pd.DataFrame]:
-    results: dict[str, pd.DataFrame] = {}
-    for sym in symbols:
-        df = fetch_data(sym, granularity, period)
-        if df is not None and not df.empty:
-            results[sym] = df
-    return results
+def fetch_data(symbol: str, interval: str = "1d", period: str = "6mo") -> pd.DataFrame:
+    interval = GRANULARITY_MAP.get(interval, interval)
+    df = yf.download(symbol, interval=interval, period=period, progress=False, auto_adjust=True)
+    if df is None or df.empty:
+        return pd.DataFrame()
+    df = _flatten_multiindex(df)
+    df.index = pd.to_datetime(df.index)
+    return df
+
+
+def fetch_multiple(symbols: list[str], interval: str = "1d", period: str = "6mo") -> dict[str, pd.DataFrame]:
+    return {sym: fetch_data(sym, interval, period) for sym in symbols}
 
 
 def load_symbols_from_csv(path: str) -> list[str]:
-    df = pd.read_csv(path)
+    df = pd.read_csv(path, comment="#")
     col = None
     for candidate in ["symbol", "Symbol", "SYMBOL", "ticker", "Ticker", "name", "Name"]:
         if candidate in df.columns:

@@ -6,19 +6,17 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 import pandas as pd
-import yfinance as yf
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 from agentest.utils.indicators.ema import compute_ema, detect_crossover
 from agentest.utils.indicators.heikin_ashi import compute_heikin_ashi, detect_ha_signal, scan_combined
+from agentest.utils.indicators.data import fetch_data
 
 DOCUMENTS_DIR = Path.home() / "Documents" / "Agentest_Reports"
 
-BT_PARAMS = {
-    "lookback_months": 18,
-    "min_data_days": 60,
-}
+MIN_DATA_DAYS = 60
+LOOKBACK_MONTHS = 18
 
 HEADER_FILL = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
 HEADER_FONT = Font(bold=True, color="FFFFFF", size=11)
@@ -33,14 +31,10 @@ ACTION_FILLS = {
 
 
 def _fetch_data(symbol: str) -> pd.DataFrame | None:
-    try:
-        t = yf.Ticker(symbol)
-        df = t.history(period=f"{BT_PARAMS['lookback_months']}mo", interval="1d")
-        if df.empty or len(df) < BT_PARAMS["min_data_days"]:
-            return None
-        return df
-    except Exception:
+    df = fetch_data(symbol, interval="1d", period=f"{LOOKBACK_MONTHS}mo")
+    if df.empty or len(df) < MIN_DATA_DAYS:
         return None
+    return df
 
 
 def _signal_at_idx(df: pd.DataFrame, idx: int) -> dict:

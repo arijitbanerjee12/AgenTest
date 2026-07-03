@@ -1,0 +1,43 @@
+symbol,category,sector
+HAL.NS,mid_small_cap,Defence
+DATAPATTNS.NS,mid_small_cap,Defence
+PARAS.NS,mid_small_cap,Defence
+BDL.NS,mid_small_cap,Defence
+DIXON.NS,mid_small_cap,Electronics Manufacturing
+KAYNES.NS,mid_small_cap,Electronics Manufacturing
+CGPOWER.NS,mid_small_cap,Electronics Manufacturing
+SYRMA.NS,mid_small_cap,Electronics Manufacturing
+AVALON.NS,mid_small_cap,Electronics Manufacturing
+WABAG.NS,mid_small_cap,Water Infrastructure
+IONEXCHANG.NS,mid_small_cap,Water Infrastructure
+INDIANHUME.NS,mid_small_cap,Water Infrastructure
+EIEL.NS,mid_small_cap,Water Infrastructure
+DENTA.NS,mid_small_cap,Water Infrastructure
+SIEMENS.NS,mid_small_cap,AI & Power Infrastructure
+ABB.NS,mid_small_cap,AI & Power Infrastructure
+SCHNEIDER.NS,mid_small_cap,AI & Power Infrastructure
+ANGELONE.NS,mid_small_cap,Financials
+MCX.NS,mid_small_cap,Financials
+PERSISTENT.NS,mid_small_cap,Digital & Tech
+RATEGAIN.NS,mid_small_cap,Digital & Tech
+AFFLE.NS,mid_small_cap,Digital & Tech
+INTELLECT.NS,mid_small_cap,Digital & Tech
+INDGN.NS,mid_small_cap,Digital & Tech
+NEWGEN.NS,mid_small_cap,Digital & Tech
+# ── Power Sector (from thermal power capex cycle video) ──
+# Generation
+ADANIPOWER.NS,mid_small_cap,Power
+JSWENERGY.NS,mid_small_cap,Power
+SARDAEN.NS,mid_small_cap,Power
+VEDL.NS,mid_small_cap,Power
+# Fuel
+NLCINDIA.NS,mid_small_cap,Power
+# BTG & EPC
+BHEL.NS,mid_small_cap,Power
+THERMAX.NS,mid_small_cap,Power
+TRITURBINE.NS,mid_small_cap,Power
+POWERMECH.NS,mid_small_cap,Power
+# Piping & Ancillaries
+RATNAMANI.NS,mid_small_cap,Power
+VENUSPIPES.NS,mid_small_cap,Power
+REFEX.NS,mid_small_cap,Power

@@ -40,14 +40,17 @@ def _sanitize_filename(s: str) -> str:
 
 
 def _save_stock_result(symbol: str, category: str, action: str, reason: str, priority: str, close: float,
-                       ema_10: float, ema_20: float, crossover: str, ha_signal: str, ha_strength: float) -> None:
+                       ema_10: float, ema_20: float, crossover: str, ha_signal: str, ha_strength: float,
+                       volume_confirmed: bool = False, volume_ratio: float = 0.0,
+                       vpa_signal: str = "none") -> None:
     _SCAN_RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     name = COMMODITY_NAMES.get(symbol, symbol)
     data = {
         "symbol": symbol, "name": name, "category": category, "action": action, "reason": reason,
         "priority": priority, "close": round(close, 2), "ema_10": round(ema_10, 2),
         "ema_20": round(ema_20, 2), "crossover": crossover, "ha_signal": ha_signal,
-        "ha_strength": ha_strength,
+        "ha_strength": ha_strength, "volume_confirmed": volume_confirmed,
+        "volume_ratio": round(volume_ratio, 2), "vpa_signal": vpa_signal,
     }
     safe = _sanitize_filename(symbol)
     (_SCAN_RESULTS_DIR / f"{safe}.json").write_text(json.dumps(data, indent=2), encoding="utf-8")
@@ -470,7 +473,8 @@ def analyze_single_stock(context, symbol, request, period: str):
         cross_signals = detect_crossover(df["EMA_10"], df["EMA_20"])
         ha = compute_heikin_ashi(df)
         ha_signal = detect_ha_signal(ha)
-        scan = scan_combined(df["EMA_10"], df["EMA_20"], ha_signal)
+        volume = df["Volume"] if "Volume" in df.columns else None
+        scan = scan_combined(df["EMA_10"], df["EMA_20"], ha_signal, volume, ha)
 
         cfg["single_result"] = {
             "symbol": symbol,
@@ -528,6 +532,9 @@ def check_single_stock_signal(context, symbol, request, category: str, global_co
             crossover=cross.get("type", "none"),
             ha_signal=ha.get("signal", "unknown"),
             ha_strength=ha.get("strength", 0),
+            volume_confirmed=s.get("volume_confirmed", False),
+            volume_ratio=s.get("volume_ratio", 0.0),
+            vpa_signal=s.get("vpa_signal", "none"),
         )
 
         if not has_signal:

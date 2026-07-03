@@ -25,6 +25,26 @@ Feature: Focus Scan — ETFs + Top 30 Large Caps
     When I analyze stock for "3y"
     Then I check signal in category "large_cap"
 
+  @sectorial
+  Scenario: Focus Sectorial scan
+    Given I configure EMA indicators
+      | period | field |
+      | 10     | Close |
+      | 20     | Close |
+    And I select data granularity "daily"
+    When I analyze stock for "3y"
+    Then I check signal in category "mid_small_cap"
+
+  @mid_small_cap
+  Scenario: Focus Mid/Small Cap scan
+    Given I configure EMA indicators
+      | period | field |
+      | 10     | Close |
+      | 20     | Close |
+    And I select data granularity "daily"
+    When I analyze stock for "3y"
+    Then I check signal in category "mid_small_cap"
+
   @summary @focus_scan
   Scenario: Focus Scan Summary Dashboard
     Then I generate cumulative scan dashboard

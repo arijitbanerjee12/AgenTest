@@ -27,7 +27,8 @@ def run_daily_scan(data: dict[str, pd.DataFrame], ema_config: list[dict]) -> dic
         ha = compute_heikin_ashi(df)
         ha_signal = detect_ha_signal(ha)
 
-        scan = scan_combined(df[short_col], df[long_col], ha_signal)
+        volume = df["Volume"] if "Volume" in df.columns else None
+        scan = scan_combined(df[short_col], df[long_col], ha_signal, volume, ha)
 
         results[sym] = {
             "data": df,
@@ -70,6 +71,9 @@ def generate_daily_report(
             "status": scan.get("status", "no_action"),
             "reason": scan.get("reason", ""),
             "priority": scan.get("priority", "LOW"),
+            "volume_confirmed": scan.get("volume_confirmed", False),
+            "volume_ratio": scan.get("volume_ratio", 0.0),
+            "vpa_signal": scan.get("vpa_signal", "none"),
         })
 
     df = pd.DataFrame(rows)

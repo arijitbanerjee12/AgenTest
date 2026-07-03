@@ -137,6 +137,43 @@ SECTOR_MAP: dict[str, str] = {
     "TOP100CASE": "Factor ETF (Top 100 Quality)",
     "IDFNIFTYET": "Index ETF (Nifty 50)",
     "NETF": "Index ETF (Nifty 50)",
+
+    # Mid/Small Cap — fundamentally strong
+    "PERSISTENT": "Digital Engineering",
+    "RATEGAIN": "Travel Tech",
+    "AFFLE": "Digital Advertising",
+    "INTELLECT": "Banking Tech",
+    "INDGN": "Life Sciences IT",
+    "NEWGEN": "Software",
+
+    # Mid/Small Cap — Water Infrastructure
+    "WABAG": "Water Infrastructure",
+    "EIEL": "Water Infrastructure",
+    "INDIANHUME": "Water Infrastructure",
+    "DENTA": "Water Infrastructure",
+    "IONEXCHANG": "Water Infrastructure",
+
+    # Mid/Small Cap — Defence
+    "HAL": "Defense & Aerospace",
+    "DATAPATTNS": "Defense & Aerospace",
+    "PARAS": "Defense & Aerospace",
+    "BDL": "Defense & Aerospace",
+
+    # Mid/Small Cap — Electronics Manufacturing
+    "DIXON": "Electronics Manufacturing",
+    "KAYNES": "Electronics Manufacturing",
+    "CGPOWER": "Electronics Manufacturing",
+    "SYRMA": "Electronics Manufacturing",
+    "AVALON": "Electronics Manufacturing",
+
+    # Mid/Small Cap — AI / Power Infrastructure
+    "SIEMENS": "Industrial Automation",
+    "ABB": "Industrial Automation",
+    "SCHNEIDER": "Industrial Automation",
+
+    # Mid/Small Cap — Financials
+    "ANGELONE": "Financial Services",
+    "MCX": "Financial Services",
 }
 
 KNOWLEDGE_BASE: dict[str, dict] = {
@@ -220,6 +257,19 @@ KNOWLEDGE_BASE: dict[str, dict] = {
     "Factor ETF (Momentum - Chemicals)": {"pe_range": (25, 40), "growth_outlook": "stable", "trend_note": "Chemical momentum; global supply chain shift; China+1"},
     "Factor ETF (Momentum - Healthcare)": {"pe_range": (30, 45), "growth_outlook": "positive", "trend_note": "Healthcare momentum; hospitals + pharma; demand uptick"},
     "Factor ETF (Alpha Low Vol 50)": {"pe_range": (18, 28), "growth_outlook": "stable", "trend_note": "Low volatility + alpha on 50 stocks; defensive with edge"},
+
+    # Mid/Small Cap sectors
+    "Digital Engineering": {"pe_range": (25, 40), "growth_outlook": "positive", "trend_note": "Persistent Systems: product engineering & digital transformation; AI/cloud partnerships; enterprise data readiness"},
+    "Travel Tech": {"pe_range": (40, 60), "growth_outlook": "positive", "trend_note": "RateGain: travel/hospitality SaaS; proprietary data moat; AI-driven revenue intelligence for hotels"},
+    "Digital Advertising": {"pe_range": (35, 50), "growth_outlook": "positive", "trend_note": "Affle: mobile advertising platform; CPCU model; consumer behavior data driving ad efficiency"},
+    "Banking Tech": {"pe_range": (25, 40), "growth_outlook": "positive", "trend_note": "Intellect Design Arena: banking technology; AI agents in core banking; Purple Fabric platform; regulatory compliance focused"},
+    "Life Sciences IT": {"pe_range": (30, 45), "growth_outlook": "positive", "trend_note": "Indegene: life sciences digital; clinical trials + regulatory docs; AI for compliance-heavy workflows"},
+
+    "Water Infrastructure": {"pe_range": (15, 25), "growth_outlook": "positive", "trend_note": "Water infrastructure EPC; Jal Jeevan Mission tailwind; government capex on water supply & wastewater treatment; urbanization driving demand"},
+
+    "Software": {"pe_range": (20, 35), "growth_outlook": "positive", "trend_note": "Newgen Software: low-code BPM/ECM platform; AI-driven process automation; enterprise digital transformation"},
+    "Electronics Manufacturing": {"pe_range": (25, 45), "growth_outlook": "positive", "trend_note": "India EMS ecosystem; PLI scheme tailwind; Apple supply chain shift; component localization drive"},
+    "Industrial Automation": {"pe_range": (35, 55), "growth_outlook": "positive", "trend_note": "Factory automation; AI/data center power infrastructure; grid modernization; capex super-cycle beneficiary"},
 }
 
 SPECIFIC_STOCK_NOTES: dict[str, list[str]] = {
@@ -265,6 +315,43 @@ SPECIFIC_STOCK_NOTES: dict[str, list[str]] = {
     "SBILIFE": ["APEx margins improving", "Protection share growing", "Bancassurance channel strong"],
     "HDFCLIFE": ["VNB margin 27%+", "Credit life + protection mix improving", "Distribution network extensive"],
     "INDUSINDBK": ["Merger with BFIL completing", "Corporate book rebalancing", "NIM expectations improving"],
+
+    # Mid/Small Cap — Digital / Tech
+    "PERSISTENT": ["AI-first engineering partnerships", "Enterprise data readiness focus", "Proprietary IP building", "Tier-1 IT peer in digital engineering"],
+    "RATEGAIN": ["Proprietary travel/hospitality data moat", "AI revenue intelligence platform", "Global hotel chain client base", "SaaS recurring revenue model"],
+    "AFFLE": ["Unique CPCU (cost-per-converted-user) model", "Consumer behavior + conversion data advantage", "Mobile-first ad platform", "Profitable growth with strong cash flows"],
+    "INTELLECT": ["Purple Fabric platform with embedded AI agents", "Mission-critical banking workflow focus", "Regulatory compliance DNA", "1,200+ financial institution clients"],
+    "INDGN": ["Deep life sciences domain expertise", "AI for clinical trials & regulatory docs", "FDA compliance knowledge", "Pharma + biotech client base"],
+    "NEWGEN": ["Low-code BPM/ECM platform for digital transformation", "AI-driven process automation", "Government + BFSI client base", "Strong product IP with recurring revenue"],
+
+    # Mid/Small Cap — Water Infrastructure
+    "WABAG": ["Global water & wastewater EPC leader", "Strong order book in India & international markets", "Advanced water treatment technologies", "Jal Jeevan Mission beneficiary"],
+    "EIEL": ["Water & wastewater treatment plant EPC", "Sewage treatment + common effluent treatment plants", "Government contracts for water supply schemes", "15+ years of execution track record"],
+    "INDIANHUME": ["Pioneer in pipe manufacturing for water supply", "Hume pipes + prestressed concrete pipes", "Government water infrastructure projects", "Established relationships with state water boards"],
+    "DENTA": ["Groundwater recharge & water management specialist", "Civil engineering contractor for water projects", "Karnataka-focused with Jal Jeevan Mission exposure", "Recently IPO'd in Jan 2025"],
+    "IONEXCHANG": ["Strong technology moat in ion exchange resins", "Industrial water treatment specialist", "Municipal + industrial wastewater solutions", "Long-standing government relationships"],
+
+    # Mid/Small Cap — Defence
+    "HAL": ["Tejas fighter jet production ramping", "Helicopter division growth (LCH, LUH)", "Record order book >₹1L Cr", "Strongest defence compounder in India"],
+    "DATAPATTNS": ["Indigenous radar & electronic warfare systems", "Space-grade electronics", "High R&D moat in defence electronics", "Make in India defence push beneficiary"],
+    "PARAS": ["Defence optics & night vision technology", "Space components manufacturing", "Niche technology with high entry barriers", "Growing order book from DRDO + private sector"],
+    "BDL": ["Missile systems leader (Akash, Nag, Astra)", "Strong parentage (DRDO tech transfer)", "Export orders growing", "Long-term production visibility from armed forces induction"],
+
+    # Mid/Small Cap — Electronics Manufacturing
+    "DIXON": ["India's EMS leader; Apple ecosystem exposure", "Mobile manufacturing scaling rapidly", "Consumer electronics + home appliances", "PLI scheme major beneficiary"],
+    "KAYNES": ["High-end EMS for aerospace & industrial", "Aerospace electronics certified", "IoT + smart metering product portfolio", "Export-driven growth story"],
+    "CGPOWER": ["Semiconductor ecosystem play with CG Semi", "Power & industrial electronics", "Railway electrification beneficiary", "Legacy brand with manufacturing scale"],
+    "SYRMA": ["PCB assembly + box build capabilities", "Automotive + industrial electronics", "EMS with design-led manufacturing", "Rapid revenue growth trajectory"],
+    "AVALON": ["Clean room electronics manufacturing", "Aerospace & defence electronics", "Medical device electronics exposure", "High-value assembly expertise"],
+
+    # Mid/Small Cap — AI / Power Infrastructure
+    "SIEMENS": ["Factory automation & digital twin leader", "Rail electrification + smart grid", "AI-enabled industrial IoT play", "Capex super-cycle beneficiary"],
+    "ABB": ["Industrial automation & robotics", "Data center power infrastructure", "EV charging + grid modernization", "Strong global technology backing"],
+    "SCHNEIDER": ["Data center cooling & power management", "Building automation & energy efficiency", "Medium voltage switchgear leader", "AI infra power demand tailwind"],
+
+    # Mid/Small Cap — Financials
+    "ANGELONE": ["Discount broking market share leader", "Technology-first trading platform", "Client additions stabilizing after peak", "Diversifying into wealth management"],
+    "MCX": ["Monopoly commodity exchange in India", "Options trading volume surge", "SEBI regulatory support for commodity derivatives", "High operating leverage play"],
 }
 
 # ETF-specific notes

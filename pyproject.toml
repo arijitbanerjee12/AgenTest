@@ -72,4 +72,5 @@ markers = [
     "summary: cumulative dashboard summary that runs after per-stock tests",
     "indicator_test: tests that fetch market data and compute trading indicators",
     "btst_scan: BTST backtest — indices + top 10 large caps on hourly data",
+    "mid_small_cap: fundamentally strong mid/small cap stocks",
 ]

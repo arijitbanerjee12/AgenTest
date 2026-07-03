@@ -85,6 +85,16 @@ pytest_plugins = [
 
 ---
 
+## Output Directory
+
+All Excel reports are saved to `~/Documents/Agentest_Reports/YYYY-MM-DD/` (e.g. `~/Documents/Agentest_Reports/2026-06-20/`). Each date gets its own folder with:
+- `FocusScan_YYYYMMDD_HHMMSS.xlsx` — long-term scan report (3 sheets: All Signals, AI Analysis, Summary)
+- `BTST_TodaySignals_YYYYMMDD_HHMMSS.xlsx` — today's BTST signals (if BTST is enabled)
+
+Raw scan JSONs go to `tests/temp/scan_results/` (intermediate data, cleaned between runs).
+
+The pipeline must be run via `scripts/run_daily.py` (not raw `pytest`) to generate the Excel reports. Running `pytest` alone only produces JSONs.
+
 ## 5. Pipeline (`scripts/run_daily.py` / `focus_scan.ps1`)
 
 | Step | Action | Output |
@@ -176,7 +186,13 @@ Per-stock charts: EMA lines, HA candles, Buy/Sell markers (150 DPI). Dashboard: 
 
 ---
 
-## 10. Code Style
+## 10. Agent Instruction — Workflow vs Scripts
+
+When the user says **"run the workflow"**, **"run btst"**, **"run long term"**, or any variant of **"run for tomorrow"**, always run the full pipeline via `uv run python scripts/run_daily.py --btst-backtest --sector-backtest`.
+
+The standalone scripts (`scripts/btst_check.py`, `scripts/longterm_check.py`) are only used when the user explicitly asks for them by name (e.g., "run btst_check.py", "run the standalone scripts").
+
+## 11. Code Style
 
 - No comments unless asked
 - Type hints (PEP 484), prefer `from __future__ import annotations`

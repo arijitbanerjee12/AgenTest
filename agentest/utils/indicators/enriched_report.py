@@ -13,6 +13,7 @@ from openpyxl.utils import get_column_letter
 from agentest.utils.indicators.fundamental_analysis import analyze_batch
 
 SCAN_RESULTS_DIR = Path("tests/temp/scan_results")
+HOLDINGS_FILE = Path("tests/data/holdings/portfolio.csv")
 
 
 def _load_all_results() -> list[dict]:
@@ -27,6 +28,29 @@ def _load_all_results() -> list[dict]:
             except Exception:
                 pass
     return stocks
+
+
+def _load_holdings() -> list[dict]:
+    """Load portfolio holdings from CSV."""
+    if not HOLDINGS_FILE.exists():
+        return []
+    import csv
+    holdings: list[dict] = []
+    with open(HOLDINGS_FILE, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            ticker = row.get("ticker", "").strip()
+            if ticker:
+                holdings.append({
+                    "instrument": row.get("instrument", ""),
+                    "ticker": ticker,
+                    "category": row.get("category", ""),
+                    "units": row.get("units", ""),
+                    "invested": row.get("invested", ""),
+                })
+    return holdings
+
+
 DOCUMENTS_DIR = Path.home() / "Documents" / "Agentest_Reports"
 
 HEADER_FILL = PatternFill(start_color="2C3E50", end_color="2C3E50", fill_type="solid")
@@ -43,8 +67,10 @@ ACTION_FILLS = {
     "WATCH": PatternFill(start_color="D9D9D9", end_color="D9D9D9", fill_type="solid"),
     "SKIP": PatternFill(start_color="F2F2F2", end_color="F2F2F2", fill_type="solid"),
 }
-MATCH_FILL = PatternFill(start_color="006400", end_color="006400", fill_type="solid")
-MATCH_FONT = Font(bold=True, color="FFFFFF", size=10)
+BUY_MATCH_FILL = PatternFill(start_color="C6EFCE", end_color="C6EFCE", fill_type="solid")
+SELL_MATCH_FILL = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type="solid")
+RF = PatternFill(start_color="FFC7CE", end_color="FFC7CE", fill_type="solid")
+GF = PatternFill(start_color="C6EFCE", end_color="C6EFCE", fill_type="solid")
 
 VERDICT_FILLS = {
     "buy":  PatternFill(start_color="C6EFCE", end_color="C6EFCE", fill_type="solid"),
@@ -144,6 +170,49 @@ def generate_enriched_report(analyze_fundamentals: bool = True, folder: Path | N
             _write_cell(ws, row, 2, c, fill=fill)
             row += 1
 
+    # ── Holdings Alert (before BUY/SELL signals) ──
+    holdings = _load_holdings()
+    if holdings:
+        row += 2
+        _write_cell(ws, row, 1, "Your Portfolio — SELL Alerts", font=Font(bold=True, size=12))
+        row += 1
+        sell_signals = {s.get("symbol", "") for s in signals if s.get("action") == "SELL"}
+        alerted = [h for h in holdings if h["ticker"] in sell_signals]
+        if alerted:
+            _write_cell(ws, row, 1, "Instrument", font=Font(bold=True))
+            _write_cell(ws, row, 2, "Ticker", font=Font(bold=True))
+            _write_cell(ws, row, 3, "Technical Reason", font=Font(bold=True))
+            _write_cell(ws, row, 4, "AI Verdict", font=Font(bold=True))
+            _write_cell(ws, row, 5, "Verdict Reason", font=Font(bold=True))
+            row += 1
+            for h in alerted:
+                sig = next((s for s in signals if s.get("symbol") == h["ticker"]), {})
+                fa = fa_lookup.get(h["ticker"], {})
+                _write_cell(ws, row, 1, h["instrument"], fill=RF)
+                _write_cell(ws, row, 2, h["ticker"], fill=RF)
+                _write_cell(ws, row, 3, sig.get("reason", ""), fill=RF)
+                _write_cell(ws, row, 4, fa.get("overall_verdict", ""), fill=RF)
+                _write_cell(ws, row, 5, fa.get("verdict_reason", ""), fill=RF)
+                row += 1
+        else:
+            _write_cell(ws, row, 1, "No SELL signals on any of your holdings")
+            row += 2
+
+        # Holdings not in scan list
+        scan_symbols = {s.get("symbol", "") for s in signals}
+        unmonitored = [h for h in holdings if h["ticker"] and h["ticker"] not in scan_symbols]
+        if unmonitored:
+            row += 1
+            _write_cell(ws, row, 1, "Unmonitored Holdings (not scanned)", font=Font(bold=True, size=11))
+            row += 1
+            _write_cell(ws, row, 1, "Instrument", font=Font(bold=True))
+            _write_cell(ws, row, 2, "Ticker", font=Font(bold=True))
+            row += 1
+            for h in unmonitored:
+                _write_cell(ws, row, 1, h["instrument"])
+                _write_cell(ws, row, 2, h["ticker"])
+                row += 1
+
     # BUY / SELL symbol lists split by category with AI verdict + match highlight
     row += 2
     _write_cell(ws, row, 1, "Recommended Symbols", font=Font(bold=True, size=12))
@@ -154,6 +223,7 @@ def generate_enriched_report(analyze_fundamentals: bool = True, folder: Path | N
         if not etfs and not stocks:
             continue
         expected_verdict = action.lower()
+        match_fill = BUY_MATCH_FILL if action == "BUY" else SELL_MATCH_FILL
         _write_cell(ws, row, 1, f"{action} ({len(etfs)+len(stocks)})", fill=ACTION_FILLS.get(action))
         row += 1
         _write_cell(ws, row, 1, "ETFs", font=Font(bold=True))
@@ -163,7 +233,6 @@ def generate_enriched_report(analyze_fundamentals: bool = True, folder: Path | N
         row += 1
         max_len = max(len(etfs), len(stocks), 1)
         for i in range(max_len):
-            match_any = False
             col_vals = []
             for col_idx, items in enumerate([etfs, stocks]):
                 sym_data = items[i] if i < len(items) else None
@@ -172,19 +241,15 @@ def generate_enriched_report(analyze_fundamentals: bool = True, folder: Path | N
                     fa = fa_lookup.get(sym, {})
                     verdict = fa.get("overall_verdict", "")
                     is_match = verdict == expected_verdict
-                    if is_match:
-                        match_any = True
                     col_vals.append((sym, verdict, is_match))
                 else:
                     col_vals.append(("", "", False))
-            fill = MATCH_FILL if match_any else None
-            font = MATCH_FONT if match_any else None
             c1, v1, m1 = col_vals[0]
             c2, v2, m2 = col_vals[1]
-            _write_cell(ws, row, 1, c1, fill=fill if m1 else None, font=font if m1 else None)
-            _write_cell(ws, row, 2, v1, fill=fill if m1 else None, font=font if m1 else None)
-            _write_cell(ws, row, 3, c2, fill=fill if m2 else None, font=font if m2 else None)
-            _write_cell(ws, row, 4, v2, fill=fill if m2 else None, font=font if m2 else None)
+            _write_cell(ws, row, 1, c1, fill=match_fill if m1 else None)
+            _write_cell(ws, row, 2, v1, fill=match_fill if m1 else None)
+            _write_cell(ws, row, 3, c2, fill=match_fill if m2 else None)
+            _write_cell(ws, row, 4, v2, fill=match_fill if m2 else None)
             row += 1
         row += 1
 
@@ -192,6 +257,7 @@ def generate_enriched_report(analyze_fundamentals: bool = True, folder: Path | N
     ws.column_dimensions["B"].width = 12
     ws.column_dimensions["C"].width = 26
     ws.column_dimensions["D"].width = 12
+    ws.column_dimensions["E"].width = 36
 
     # ── All Signals Sheet ──
     ws2 = wb.create_sheet("All Signals")
